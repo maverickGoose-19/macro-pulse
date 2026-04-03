@@ -17,54 +17,41 @@ templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request, db: AsyncSession = Depends(get_db)):
-    # Fetch curve, credit, CPI, and summary in parallel via a single round-trip each,
-    # but issued concurrently using asyncio.gather.
-    import asyncio
+    r = await db.execute(text("""
+        SELECT
+            (SELECT value FROM series_points WHERE fred_id='T10Y2Y' AND value IS NOT NULL ORDER BY observation_date DESC LIMIT 1) AS spread_10y2y,
+            (SELECT value FROM series_points WHERE fred_id='T10Y3M' AND value IS NOT NULL ORDER BY observation_date DESC LIMIT 1) AS spread_10y3m,
+            (SELECT observation_date FROM series_points WHERE fred_id='T10Y2Y' AND value IS NOT NULL ORDER BY observation_date DESC LIMIT 1) AS as_of
+    """))
+    curve = r.fetchone()
 
-    async def _curve():
-        r = await db.execute(text("""
-            SELECT
-                (SELECT value FROM series_points WHERE fred_id='T10Y2Y' AND value IS NOT NULL ORDER BY observation_date DESC LIMIT 1) AS spread_10y2y,
-                (SELECT value FROM series_points WHERE fred_id='T10Y3M' AND value IS NOT NULL ORDER BY observation_date DESC LIMIT 1) AS spread_10y3m,
-                (SELECT observation_date FROM series_points WHERE fred_id='T10Y2Y' AND value IS NOT NULL ORDER BY observation_date DESC LIMIT 1) AS as_of
-        """))
-        return r.fetchone()
+    r = await db.execute(text("""
+        SELECT value AS hy_spread, observation_date
+        FROM series_points
+        WHERE fred_id='BAMLH0A0HYM2' AND value IS NOT NULL
+        ORDER BY observation_date DESC LIMIT 1
+    """))
+    credit = r.fetchone()
 
-    async def _credit():
-        r = await db.execute(text("""
-            SELECT value AS hy_spread, observation_date
-            FROM series_points
-            WHERE fred_id='BAMLH0A0HYM2' AND value IS NOT NULL
-            ORDER BY observation_date DESC LIMIT 1
-        """))
-        return r.fetchone()
+    r = await db.execute(text("""
+        SELECT value, observation_date FROM series_points
+        WHERE fred_id='CPIAUCSL' AND value IS NOT NULL
+        ORDER BY observation_date DESC LIMIT 13
+    """))
+    cpi_data = r.fetchall()
 
-    async def _cpi():
-        r = await db.execute(text("""
-            SELECT value, observation_date FROM series_points
-            WHERE fred_id='CPIAUCSL' AND value IS NOT NULL
-            ORDER BY observation_date DESC LIMIT 13
-        """))
-        return r.fetchall()
+    r = await db.execute(text(
+        "SELECT summary_text FROM summary_runs ORDER BY generated_at DESC LIMIT 1"
+    ))
+    summary = r.fetchone()
 
-    async def _summary():
-        r = await db.execute(text(
-            "SELECT summary_text FROM summary_runs ORDER BY generated_at DESC LIMIT 1"
-        ))
-        return r.fetchone()
-
-    async def _hy_zscore():
-        r = await db.execute(text("""
-            SELECT hy_spread_zscore_1y FROM comparison_snapshots
-            WHERE hy_spread_zscore_1y IS NOT NULL
-            ORDER BY observation_date DESC LIMIT 1
-        """))
-        row = r.fetchone()
-        return row.hy_spread_zscore_1y if row else 0.0
-
-    curve, credit, cpi_data, summary, hy_z = await asyncio.gather(
-        _curve(), _credit(), _cpi(), _summary(), _hy_zscore()
-    )
+    r = await db.execute(text("""
+        SELECT hy_spread_zscore_1y FROM comparison_snapshots
+        WHERE hy_spread_zscore_1y IS NOT NULL
+        ORDER BY observation_date DESC LIMIT 1
+    """))
+    hy_z_row = r.fetchone()
+    hy_z = hy_z_row.hy_spread_zscore_1y if hy_z_row else 0.0
 
     cpi_yoy = None
     if len(cpi_data) >= 13:
@@ -95,6 +82,7 @@ async def dashboard(request: Request, db: AsyncSession = Depends(get_db)):
             "inflation_state_label": inf_label,
             "inflation_state_color": inf_color,
             "summary_text": summary.summary_text if summary else "Summary not yet available. Run ingestion first.",
+            "hy_z": hy_z,
             "copy": PANEL_COPY,
             "glossary": GLOSSARY,
         },

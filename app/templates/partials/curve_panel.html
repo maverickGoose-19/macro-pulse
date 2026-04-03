@@ -24,6 +24,22 @@
   <!-- Chart -->
   <div id="curve-chart" style="height:220px;" class="mb-3"></div>
 
+  <!-- Current reading -->
+  <p class="text-xs text-zinc-400 leading-relaxed mb-3">
+    The 10Y–2Y spread is <strong class="text-zinc-200">{{ spread_10y2y }}%</strong> and the 10Y–3M spread is <strong class="text-zinc-200">{{ spread_10y3m }}%</strong>.
+    {% if spread_10y2y < 0 and spread_10y3m < 0 %}
+    Both spreads are inverted — short-term rates exceed long-term rates, a historically stressed configuration.
+    {% elif spread_10y2y < 0 %}
+    The 10Y–2Y is inverted while 10Y–3M remains positive, indicating partial distortion at the short end.
+    {% elif spread_10y3m < 0 %}
+    The 10Y–3M is inverted while 10Y–2Y remains positive, a sign of near-term rate pressure.
+    {% elif spread_10y2y < 0.5 %}
+    The curve is flat but not inverted — spreads are narrow, reflecting limited term premium.
+    {% else %}
+    The curve has a normal positive slope — long rates meaningfully exceed short rates.
+    {% endif %}
+  </p>
+
   <!-- Explanation: What you're looking at -->
   <details class="group mt-2">
     <summary class="text-xs text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors

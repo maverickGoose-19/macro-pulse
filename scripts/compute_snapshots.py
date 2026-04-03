@@ -1,7 +1,7 @@
 """
-Entry point for the Render Cron Job.
-Schedule: 0 18 * * 1-5  (weekdays at 6pm ET)
-Command:  python -m scripts.ingest
+Standalone entrypoint to compute and upsert comparison_snapshots.
+Run after backfill or whenever series_points data changes:
+    python -m scripts.compute_snapshots
 """
 
 import asyncio
@@ -9,10 +9,8 @@ import logging
 import sys
 from pathlib import Path
 
-# Ensure app is importable when run as a script
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.ingestion.ingest import ingest_all_series
 from app.ingestion.snapshots import compute_and_upsert_snapshots
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -20,10 +18,7 @@ log = logging.getLogger(__name__)
 
 
 async def main() -> None:
-    log.info("Starting ingestion run")
-    await ingest_all_series()
-    log.info("Ingestion run complete")
-    log.info("Computing comparison snapshots")
+    log.info("Starting snapshot computation")
     await compute_and_upsert_snapshots()
     log.info("Snapshot computation complete")
 

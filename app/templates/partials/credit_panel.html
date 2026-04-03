@@ -21,6 +21,20 @@
   <!-- Chart -->
   <div id="credit-chart" style="height:220px;" class="mb-3"></div>
 
+  <!-- Current reading -->
+  <p class="text-xs text-zinc-400 leading-relaxed mb-3">
+    The HY OAS is currently <strong class="text-zinc-200">{{ hy_spread }}%</strong>.
+    {% if hy_z > 2.0 %}
+    This is significantly above its 1-year average — credit markets are pricing in elevated default risk.
+    {% elif hy_z > 1.0 %}
+    Spreads are elevated relative to the past year — investors are demanding more compensation for credit risk.
+    {% elif hy_z < -1.0 %}
+    Spreads are compressed relative to the past year — risk appetite is high and credit conditions are easy.
+    {% else %}
+    Spreads are near their 1-year average — credit stress is not flashing an unusual signal.
+    {% endif %}
+  </p>
+
   <!-- What you're looking at -->
   <details class="group mt-2">
     <summary class="text-xs text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors

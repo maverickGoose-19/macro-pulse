@@ -45,7 +45,9 @@ async def _fetch_series_df(
     if not records:
         return pd.DataFrame()
     df = pd.DataFrame(records, columns=["fred_id", "date", "value"])
-    return df.pivot(index="date", columns="fred_id", values="value")
+    pivoted = df.pivot(index="date", columns="fred_id", values="value")
+    pivoted.index = pd.to_datetime(pivoted.index)
+    return pivoted
 
 
 async def _freshness(db: AsyncSession, fred_ids: list[str]) -> dict:
@@ -129,7 +131,7 @@ async def get_inflation(db: AsyncSession = Depends(get_db)):
     core_yoy = df["CPILFESL"].pct_change(12).mul(100) if "CPILFESL" in df.columns else pd.Series(dtype=float)
     fedfunds = df["FEDFUNDS"] if "FEDFUNDS" in df.columns else pd.Series(dtype=float)
 
-    idx = cpi_yoy.dropna().index.union(fedfunds.dropna().index)
+    idx = pd.DatetimeIndex(cpi_yoy.dropna().index).union(pd.DatetimeIndex(fedfunds.dropna().index))
     cutoff = date.today().replace(year=date.today().year - 5)
     idx = idx[idx >= pd.Timestamp(cutoff)]
 

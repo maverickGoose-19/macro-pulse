@@ -23,6 +23,24 @@
   <!-- Chart -->
   <div id="inflation-chart" style="height:220px;" class="mb-3"></div>
 
+  <!-- Current reading -->
+  <p class="text-xs text-zinc-400 leading-relaxed mb-3">
+    {% if cpi_yoy is not none %}
+    Headline CPI is running at <strong class="text-zinc-200">{{ cpi_yoy }}%</strong> year-over-year.
+    {% if cpi_yoy > 5.0 %}
+    Inflation is significantly above the Fed's 2% target, maintaining pressure for restrictive policy.
+    {% elif cpi_yoy > 3.0 %}
+    Inflation remains elevated above target — the Fed is unlikely to ease until this moderates further.
+    {% elif cpi_yoy < 1.5 %}
+    Inflation is running below the Fed's 2% target, which may open room for rate cuts.
+    {% else %}
+    Inflation is near the Fed's 2% target — policy pressure is relatively balanced.
+    {% endif %}
+    {% else %}
+    Insufficient CPI data to compute a current reading.
+    {% endif %}
+  </p>
+
   <!-- What you're looking at -->
   <details class="group mt-2">
     <summary class="text-xs text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors

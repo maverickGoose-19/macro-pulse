@@ -15,7 +15,7 @@ def rolling_delta(series: pd.Series, periods: int = 21) -> pd.Series:
 
 def cpi_yoy(series: pd.Series) -> pd.Series:
     """Year-over-year percent change for monthly CPI series."""
-    return series.pct_change(12).mul(100).rename("cpi_yoy")
+    return series.pct_change(12, fill_method=None).mul(100).rename("cpi_yoy")
 
 
 def rolling_mean(series: pd.Series, window: int = 252) -> pd.Series:
