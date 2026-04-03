@@ -15,10 +15,15 @@ if settings.environment != "production":
     _ssl_ctx.check_hostname = False
     _ssl_ctx.verify_mode = ssl.CERT_NONE
 
+_connect_args: dict = {"ssl": _ssl_ctx}
+if settings.environment == "production":
+    # Supabase pooler (PgBouncer) doesn't support prepared statements
+    _connect_args["statement_cache_size"] = 0
+
 engine = create_async_engine(
     settings.database_url,
     pool_pre_ping=True,
-    connect_args={"ssl": _ssl_ctx},
+    connect_args=_connect_args,
 )
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
