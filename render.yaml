@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: macro-pulse
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_SYNC
+        sync: false
+      - key: FRED_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CACHE_TTL_CHART
+        value: 3600
+
+  - type: cron
+    name: macro-pulse-ingest
+    env: python
+    buildCommand: pip install -r requirements.txt
+    schedule: "0 6 * * *"
+    startCommand: python scripts/ingest.py
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: FRED_API_KEY
+        sync: false

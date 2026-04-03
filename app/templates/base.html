@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}MacroPulse{% endblock %}</title>
+  <meta name="description" content="Public macro signals — yield curve, credit stress, and inflation context from FRED. No investment advice." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+  <link rel="stylesheet" href="/static/css/site.css" />
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen antialiased">
+
+  <nav class="border-b border-zinc-800/60 px-5 py-3 flex items-center justify-between">
+    <a href="/" class="text-sm font-semibold tracking-tight text-zinc-100 hover:text-white transition-colors">
+      MacroPulse
+    </a>
+    <span class="text-xs text-zinc-600">Public data. No investment advice.</span>
+  </nav>
+
+  <main class="max-w-5xl mx-auto px-4 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="/static/js/charts.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

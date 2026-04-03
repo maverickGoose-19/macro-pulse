@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}MacroPulse — Macro Signals{% endblock %}
+
+{% block content %}
+<!-- Page header -->
+<div class="mb-5">
+  <div class="flex items-baseline justify-between">
+    <h1 class="text-base font-semibold text-zinc-100">Macro Signals</h1>
+    <span class="text-xs text-zinc-600">As of {{ as_of_date }}</span>
+  </div>
+  <p class="text-xs text-zinc-500 mt-1">
+    Yield curve, credit stress, and inflation context from FRED. Descriptive only — no investment advice.
+  </p>
+</div>
+
+<!-- Narrative summary -->
+<div class="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 mb-5">
+  <p class="text-xs text-zinc-500 uppercase tracking-wide mb-1.5 font-medium">Summary</p>
+  <p class="text-sm text-zinc-300 leading-relaxed">{{ summary_text }}</p>
+</div>
+
+<!-- 2-column grid: Curve + Credit -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+  {% include "partials/curve_panel.html" %}
+  {% include "partials/credit_panel.html" %}
+</div>
+
+<!-- Full-width: Inflation -->
+<div class="mb-4">
+  {% include "partials/inflation_panel.html" %}
+</div>
+
+<!-- Full-width: Historical comparison -->
+<div class="mb-8">
+  {% include "partials/comparison_panel.html" %}
+</div>
+
+<!-- Glossary -->
+<details class="group border border-zinc-800 rounded-lg mb-4">
+  <summary class="px-4 py-3 text-xs font-medium text-zinc-500 cursor-pointer
+                  hover:text-zinc-300 transition-colors flex items-center gap-2 select-none">
+    <svg class="w-3.5 h-3.5 transition-transform" viewBox="0 0 14 14">
+      <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>
+    Glossary
+  </summary>
+  <div class="px-4 pb-5 pt-1 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+    {% for term, definition in glossary.items() %}
+    <div>
+      <dt class="text-xs font-medium text-zinc-300">{{ term }}</dt>
+      <dd class="text-xs text-zinc-500 leading-relaxed mt-0.5">{{ definition }}</dd>
+    </div>
+    {% endfor %}
+  </div>
+</details>
+
+<!-- Footer methodology note -->
+<p class="text-xs text-zinc-700 text-center pb-6">
+  Data sourced from the
+  <a href="https://fred.stlouisfed.org" target="_blank" class="underline hover:text-zinc-500 transition-colors">Federal Reserve Economic Data (FRED) API</a>.
+  All content is descriptive. Nothing here is investment advice.
+</p>
+{% endblock %}

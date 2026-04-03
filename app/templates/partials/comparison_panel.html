@@ -1,0 +1,83 @@
+<div class="panel-card bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+
+  <!-- Header -->
+  <div class="mb-3">
+    <h2 class="text-sm font-medium text-zinc-100">{{ copy.comparison.title }}</h2>
+    <p class="text-xs text-zinc-600 mt-0.5">{{ copy.comparison.subtitle }}</p>
+  </div>
+
+  <!-- Comparison table (populated by charts.js) -->
+  <div id="comparison-table" class="divide-y divide-zinc-800 rounded-md border border-zinc-800 mb-3 min-h-[60px]">
+    <p class="text-xs text-zinc-600 p-3">Loading historical matches…</p>
+  </div>
+
+  <!-- What you're looking at -->
+  <details class="group mt-2">
+    <summary class="text-xs text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors
+                    flex items-center gap-1.5 select-none">
+      <svg class="w-3 h-3 transition-transform flex-shrink-0" viewBox="0 0 12 12">
+        <path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      What you're looking at
+    </summary>
+    <div class="mt-2 pl-4 border-l border-zinc-800 space-y-1.5">
+      <p class="text-xs text-zinc-400 leading-relaxed">{{ copy.comparison.what_you_see }}</p>
+      <p class="text-xs text-zinc-500 leading-relaxed">{{ copy.comparison.why_it_matters }}</p>
+    </div>
+  </details>
+
+  <!-- How to read this -->
+  <details class="group mt-2">
+    <summary class="text-xs text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors
+                    flex items-center gap-1.5 select-none">
+      <svg class="w-3 h-3 transition-transform flex-shrink-0" viewBox="0 0 12 12">
+        <path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      How to read this
+    </summary>
+    <div class="mt-2 pl-4 border-l border-zinc-800">
+      <ul class="space-y-1">
+        {% for item in copy.comparison.how_to_read %}
+        <li class="text-xs text-zinc-400 leading-relaxed flex gap-2">
+          <span class="text-zinc-700 flex-shrink-0 mt-px">–</span>{{ item }}
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="mt-2 text-xs text-zinc-600 italic leading-relaxed">{{ copy.comparison.caveats }}</p>
+    </div>
+  </details>
+
+  <!-- Feature weight transparency -->
+  <details class="group mt-2">
+    <summary class="text-xs text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors
+                    flex items-center gap-1.5 select-none">
+      <svg class="w-3 h-3 transition-transform flex-shrink-0" viewBox="0 0 12 12">
+        <path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      Methodology
+    </summary>
+    <div class="mt-2 pl-4 border-l border-zinc-800">
+      <p class="text-xs text-zinc-500 leading-relaxed mb-2">
+        Similarity is computed using cosine distance on a weighted feature vector. Weights:
+      </p>
+      <div class="grid grid-cols-2 gap-x-6 gap-y-1">
+        <div class="flex justify-between text-xs"><span class="text-zinc-500">10Y–2Y spread</span><span class="text-zinc-400 tabular-nums">25%</span></div>
+        <div class="flex justify-between text-xs"><span class="text-zinc-500">HY spread</span><span class="text-zinc-400 tabular-nums">20%</span></div>
+        <div class="flex justify-between text-xs"><span class="text-zinc-500">10Y–3M spread</span><span class="text-zinc-400 tabular-nums">20%</span></div>
+        <div class="flex justify-between text-xs"><span class="text-zinc-500">HY z-score</span><span class="text-zinc-400 tabular-nums">10%</span></div>
+        <div class="flex justify-between text-xs"><span class="text-zinc-500">Curve 1M delta</span><span class="text-zinc-400 tabular-nums">15%</span></div>
+        <div class="flex justify-between text-xs"><span class="text-zinc-500">CPI YoY</span><span class="text-zinc-400 tabular-nums">5%</span></div>
+        <div class="flex justify-between text-xs"><span class="text-zinc-500">Fed funds</span><span class="text-zinc-400 tabular-nums">5%</span></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- Source -->
+  <p class="text-xs text-zinc-700 mt-3 pt-3 border-t border-zinc-800/50">
+    {{ copy.comparison.source_note }}
+    <a href="{{ copy.comparison.fred_url }}" target="_blank"
+       class="text-zinc-600 hover:text-zinc-400 underline underline-offset-2 ml-1 transition-colors">
+      FRED ↗
+    </a>
+  </p>
+</div>

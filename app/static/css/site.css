@@ -1,0 +1,32 @@
+/* MacroPulse — minimal custom styles, Tailwind CDN handles utilities */
+
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+
+details[open] > summary svg {
+  transform: rotate(90deg);
+}
+
+/* Smooth accordion animation */
+details > *:not(summary) {
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Plotly overrides — remove default white background */
+.js-plotly-plot .plotly .bg { fill: transparent !important; }
+
+/* Tabular numbers in stats */
+.tabular-nums { font-variant-numeric: tabular-nums; }
+
+/* Panel hover lift */
+.panel-card {
+  transition: border-color 0.15s ease;
+}
+.panel-card:hover {
+  border-color: #52525b;
+}

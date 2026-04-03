@@ -1,0 +1,71 @@
+<div class="panel-card bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+
+  <!-- Header -->
+  <div class="flex items-start justify-between mb-3">
+    <div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <h2 class="text-sm font-medium text-zinc-100">{{ copy.curve.title }}</h2>
+        <span class="text-xs px-1.5 py-0.5 rounded-full font-medium {{ curve_state_color }}">
+          {{ curve_state_label }}
+        </span>
+      </div>
+      <p class="text-xs text-zinc-600 mt-0.5">{{ copy.curve.subtitle }}</p>
+    </div>
+    <div class="flex gap-2 flex-shrink-0 ml-2">
+      <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 tabular-nums">
+        10Y–2Y <strong>{{ spread_10y2y }}%</strong>
+      </span>
+      <span class="text-xs px-2 py-0.5 rounded bg-zinc-800 text-zinc-300 tabular-nums">
+        10Y–3M <strong>{{ spread_10y3m }}%</strong>
+      </span>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div id="curve-chart" style="height:220px;" class="mb-3"></div>
+
+  <!-- Explanation: What you're looking at -->
+  <details class="group mt-2">
+    <summary class="text-xs text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors
+                    flex items-center gap-1.5 select-none">
+      <svg class="w-3 h-3 transition-transform flex-shrink-0" viewBox="0 0 12 12">
+        <path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      What you're looking at
+    </summary>
+    <div class="mt-2 pl-4 border-l border-zinc-800 space-y-1.5">
+      <p class="text-xs text-zinc-400 leading-relaxed">{{ copy.curve.what_you_see }}</p>
+      <p class="text-xs text-zinc-500 leading-relaxed">{{ copy.curve.why_it_matters }}</p>
+    </div>
+  </details>
+
+  <!-- Explanation: How to read this -->
+  <details class="group mt-2">
+    <summary class="text-xs text-zinc-600 cursor-pointer hover:text-zinc-400 transition-colors
+                    flex items-center gap-1.5 select-none">
+      <svg class="w-3 h-3 transition-transform flex-shrink-0" viewBox="0 0 12 12">
+        <path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+      How to read this
+    </summary>
+    <div class="mt-2 pl-4 border-l border-zinc-800">
+      <ul class="space-y-1">
+        {% for item in copy.curve.how_to_read %}
+        <li class="text-xs text-zinc-400 leading-relaxed flex gap-2">
+          <span class="text-zinc-700 flex-shrink-0 mt-px">–</span>{{ item }}
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="mt-2 text-xs text-zinc-600 italic leading-relaxed">{{ copy.curve.caveats }}</p>
+    </div>
+  </details>
+
+  <!-- Source — always visible -->
+  <p class="text-xs text-zinc-700 mt-3 pt-3 border-t border-zinc-800/50">
+    {{ copy.curve.source_note }}
+    <a href="{{ copy.curve.fred_url }}" target="_blank"
+       class="text-zinc-600 hover:text-zinc-400 underline underline-offset-2 ml-1 transition-colors">
+      FRED ↗
+    </a>
+  </p>
+</div>
