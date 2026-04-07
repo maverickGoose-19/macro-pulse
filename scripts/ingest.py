@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from app.ingestion.ingest import ingest_all_series
 from app.ingestion.snapshots import compute_and_upsert_snapshots
+from app.narrative.runner import generate_and_save_summary
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -26,6 +27,9 @@ async def main() -> None:
     log.info("Computing comparison snapshots")
     await compute_and_upsert_snapshots()
     log.info("Snapshot computation complete")
+    log.info("Generating narrative summary")
+    await generate_and_save_summary()
+    log.info("Summary generation complete")
 
 
 if __name__ == "__main__":
